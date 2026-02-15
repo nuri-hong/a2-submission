@@ -3,6 +3,37 @@
 <head>
 	<title>Vis & Society Assignment 2</title>
 	<link rel="stylesheet" href="https://vis-society.github.io/assignments/report.css" />
+	<style>
+		figure {
+			max-width: 100%;
+		}
+
+		figure img {
+			display: block;
+			width: 100%;
+			max-width: 100%;
+			height: auto;
+		}
+
+		figure.scroll-x {
+			overflow-x: auto;
+			overflow-y: hidden;
+		}
+
+		figure.scroll-x img {
+			width: auto;
+			max-width: none;
+			height: clamp(360px, 52vh, 560px);
+		}
+
+		figcaption::before {
+			content: none !important;
+		}
+
+		figcaption {
+			font-weight: 700;
+		}
+	</style>
 </head>
 
 <body>
@@ -13,100 +44,347 @@
 		</h1>
 
 		<p>
-			<strong>Your Name</strong> — <em>Your MIT Email Address</em>
+			<strong>Nuri Hong</strong> — <em>nurihong@mit.edu</em>
 		</p>
 	</header>
 	<main>
 		<section>
-			<h2>Subtheme: [ENTER SUBTHEME]</h2>
+			<h2>Subtheme: Speculation</h2>
 
-			<h3>Overall Analysis Questions</h3>
+			<h3>3 Overall Questions and Motivations</h3>
 			<ol>
-				<li>QUESTION_1</li>
-				<li>QUESTION_2</li>
-				<li>QUESTION_3</li>
-				<li>...</li>
+				<li>
+					<strong>How has real estate prices for a Bostonian changed over time and how does that affordability share differ by neighborhood and property type?</strong>
+					<p>
+						Motivation: I've felt the affordability gap in a very local way growing up in Lexington, MA, where price escalation and bidding wars are normal enough that it can start to feel "inevitable." Watching ordinary family homes sell at prices that would buy entirely different lifestyles elsewhere made me realize how quickly a place can become inaccessible to the people who actually want to live there long-term. For example, houses that are $500k in Dallas, Texas are sold for over $3 million in Lexington. The article I read for A1, Globe's "Towers of wealth," pushed that discomfort into the city context: if a growing slice of Boston's housing is priced for extremely high earners (or non-resident buyers), then "growth" can be happening in a way that doesn't translate into housing options for typical Bostonians. I want to quantify whether Boston's sales market is steadily moving the "affordable zone" out of reach, and whether that shift looks different in condos versus small multi-family, and across neighborhoods.
+					</p>
+				</li>
+				<li>
+					<strong>What is the relationship between real estate development and real estate purchasing in Boston over time?</strong>
+					<p>
+						Motivation: Boston's housing stock reflects a long arc from industrial growth to post-industrial wealth. The city's built form still carries the imprint of earlier eras-red-brick rowhouses, triple-deckers, and the iconic bay-window streetscapes associated with neighborhoods like the Back Bay. Yet, when I walk along the Charles it's obvious that the skyline is increasingly defined by glass high-rises and new luxury towers. That contrast raises a basic question about what "development" has meant in Boston over time: as the city shifted from a working port-and-manufacturing economy to a global center of finance, healthcare, higher education, and technology, did the dominant form of residential production shift with it? In particular, Boston's recent wave of condo construction suggests a move toward housing that is packaged, financed, and traded differently than traditional owner-occupied or rental forms. I want to understand how the composition of Boston's residential market has evolved-what gets built, who buys it, and how often properties turn over-and why condos, especially in newer buildings, appear to occupy such a central role.
+					</p>
+				</li>
+				<li>
+					<strong>Are the "high-price clusters" actually driven by a small number of new condo developments in recent years?</strong>
+					<p>
+						Motivation: "Tower of Wealth" describes how Boston has tight pockets of very high prices which are large condominium projects entering the market as discrete events. Hundreds of units delivered at once, many transactions recorded in a short window, and price points set near the top of the distribution. This raises the possibility that what looks like a broad "luxury cluster" may actually be the footprint of a few new towers rather than a diffuse transformation of surrounding housing. To distinguish between these mechanisms, I want to move from neighborhood averages to building-level purchase histories, tracking how units change hands over time within the same development. Examining unit-level histories also opens a question about the nature of demand in these towers. If early buyers frequently resell within short holding periods, then these buildings may function partly as financial assets rather than conventional housing. Conversely, longer holding periods and predominantly individual ownership would suggest more stable, resident-driven demand.
+					</p>
+				</li>
 			</ol>
 		</section>
 
 		<section>
 			<h2>Discoveries & Insights</h2>
 
+			<h3>Phase 1: Overview</h3>
+			<h4>Pre-view of Data</h4>
+			<p>
+				First, I notice many residential property types are included. Scrolliing through the <strong>proptype</strong> entries, I filter the data to only include the following:
+			</p>
+			<ul>
+				<li>RCD - Residential condominium</li>
+				<li>APT- Apartment buildings (multi-unit)</li>
+				<li>R1F - 1-family residential (single-family)</li>
+				<li>R2F - 2-family residential</li>
+				<li>R3F - 3-family residential</li>
+			</ul>
+			<p>
+				This will help hone the data to the relevant units for my questions.
+			</p>
+			<h4>Sales count over time</h4>
+
 			<figure>
-				<img src="IMAGE_FILENAME" alt="" />
+				<img src="Overview 1.1.png" alt="" />
 				<figcaption>
-				ENTER IMAGE CAPTION HERE.
+				Overview 1.1: Total transactions over time and split by property type, showing that condominiums account for a large share of observed sales. Cear volume peak around 2000-2004 before a longer decline.
+				</figcaption>
+			</figure>
+			<p>
+				The total pattern is mainly driven by one category. Because condo activity is so dominant, I then remove condos and replot the counts to understand the underlying non-condo residential market.
+			</p>
+
+			<figure>
+				<img src="Overview 1.2.png" alt="" />
+				<figcaption>
+				Overview 1.2: Transactions over time excluding condominiums; among remaining residential types, 1-family sales are the largest component.
+				</figcaption>
+			</figure>
+			<p>
+				Raw counts show scale, but not composition. The next plot converts counts to shares so I can compare changes in market mix independent of overall transaction volume.
+			</p>
+
+			<figure>
+				<img src="Overview 1.3.png" alt="" />
+				<figcaption>
+				Overview 1.3: Share of transactions by property type over time, providing a normalized view of how market composition shifts across years.
+				</figcaption>
+			</figure>
+			<p>
+				With volume and composition established, I next examine prices over time to see whether affordability pressures and dispersion changed alongside transaction patterns.
+			</p>
+
+			<h4>Median price over time</h4>
+			<figure>
+				<img src="Overview 2.1.png" alt="" />
+				<figcaption>
+				Overview 2.1: Yearly median sale price over time, showing the broad direction of residential prices before adding distribution detail.
+				</figcaption>
+			</figure>
+			<p>
+				The scatterplot of median prices overtime is hard to read as there are clusters more focused below $10 mil and outliers expanding the graph view. I want to use the median to interpret the overall trend of this data.
+			</p>
+
+			<figure>
+				<img src="Overview 2.2.png" alt="" />
+				<figcaption>
+				Overview 2.2: Monthly median sale price, showing a long-run rise from the late 1980s/early 1990s through the late 2010s/early 2020s, widening spread, and notable spikes around Jan 1992 and Feb 2020; the sharp 2021-2022 drop appears to reflect incomplete data coverage (mostly RCD).
+				</figcaption>
+			</figure>
+			<p>
+				First, there is some red flag behavior after 2021, where the data drops and rises drastically and erratically. To see what's up, I look in to the data there is an absence of data for some property types. I will filter the data to before 2021. 
+				
+				Also, because housing prices span a very wide range and changes are typically multiplicative, I then use log-price boxplots by year so equal vertical distances correspond to equal percentage changes rather than equal dollar changes.
+			</p>
+
+			<figure>
+				<img src="Overview 2.3.png" alt="" />
+				<figcaption>
+				Overview 2.3: Yearly boxplots of log(price), which make percent-scale comparisons clearer and show distributions shifting upward over time; this supports focusing subsequent questions on the more comparable 2000-2021 window.
+				</figcaption>
+			</figure>
+			<p>
+				Phase 1 shows a market where transaction activity and prices move in different directions: sales volumes peak around 2000-2004 and then trend downward, while median prices and price dispersion rise over the long run. Condo transactions are a major driver of overall activity, but non-condo patterns still show changing composition over time. Together, these results suggest that affordability pressures may be increasing even as fewer properties transact.
+			</p>
+			<p>
+				This raises a key relationship to test in Phase 2: if median prices are rising while the number of sales declines after 2004, does that indicate a shift toward higher-income buyers participating more actively while lower- and middle-income households are priced out or transact less frequently? To focus on recent trends while avoiding incomplete or irregular post-COVID patterns, the next analyses will hone the time window to 2000-2020. This range also captures important early-2000s development and urbanization dynamics in Boston that may help explain changes in who buys, what gets built, and where high-price clusters emerge.
+			</p>
+
+			<h3>Phase 2: Explore Questions</h3>
+			<h4>1. How has "purchase affordability" for an average Boston household changed over time and how does that affordability share differ by neighborhood and property type (condo vs 1-3 family)?</h4>
+			<p>
+				From the overview, median prices rise while total transactions decline after about 2004. To test this affordability tension more directly, I focus on 2000-2020 and cap plotted prices at $100 million so the core distribution is readable.
+			</p>
+			<figure class="scroll-x">
+				<img src="Question 1.1.png" alt="" />
+				<figcaption>
+				Question 1.1: Price distributions across years (2000-2020), showing a shrinking overall footprint of transactions over time and a gradual rightward shift in central tendency; horizontal scroll is needed because a long right tail of high-price outliers stretches the x-axis.
+				</figcaption>
+			</figure>
+			<p>
+				To make the year-to-year change explicit, I compare selected years (2004, 2012, 2020) using area distributions and tighten the view to $5 million so the core shapes are readable. The shift suggests a city market increasingly organized around condo transactions, while much of the 1-3 family purchasing base appears to sit outside Boston proper in surrounding suburbs where family-oriented stock is more available.
+			</p>
+			<figure>
+				<img src="Question 1.2.png" alt="" />
+				<figcaption>
+				Question 1.2: Comparison of sales count versus price distribution for 2004, 2012, and 2020; the distributions become smaller in sample size while median prices shift upward.
+				</figcaption>
+			</figure>
+			<p>
+				This comparison also highlights a caution: raw distribution area is confounded by volume. A much smaller 2020 shape does not imply lower prices by itself, only fewer transactions. Even with that caveat, the pattern points to a stronger condo-centered city market, which is often associated with buyers who can absorb higher per-square-foot prices, such as high-income professionals, dual-income households without children, downsizing older owners, and some investor buyers. Next, I add geography and property type to see whether spatial patterns support that interpretation.
+			</p>
+			<figure>
+				<img src="Question 1.3.png" alt="" />
+				<figcaption>
+				Question 1.3: Boston purchase locations (filtered to valid city coordinates; invalid points such as 0,0 removed across worksheets), colored by property type, showing strong condo clustering in Back Bay, North End, South End, and Beacon Hill, with smaller pockets of apartment and 1-family activity.
+				</figcaption>
+			</figure>
+			<p>
+				The location pattern reinforces the composition story: condo clusters dominate core neighborhoods, while family-unit demand appears relatively limited inside the city and likely shifts to suburban submarkets with larger housing stock. Interpreting cautiously, this suggests Boston's for-sale core is tilted toward higher-income and more mobility-oriented buyer profiles, while households prioritizing larger family homes are more likely to transact outside these central condo clusters. I next map these concentrations over time to test whether activity is broad-based or concentrated in a few high-volume nodes.
+			</p>
+			<figure>
+				<img src="Question 1.4.png" alt="" />
+				<figcaption>
+				Question 1.4: Time-based map of purchase density, showing an overall decline in density and several large circles (high local counts, mostly condos) that suggest building-level concentration rather than uniform neighborhood growth.
 				</figcaption>
 			</figure>
 
+			<p>
+				There is a clear decreasae in the density of purchases over time. There are also less sales made in the same address (lat, long) indicating less units being purchases within the same building. Does this indicate there is less demand or less supply of these building units?
+			</p>
+			<p>
+				The data is consistent with declining market participation alongside rising prices, which may indicate increasing exclusion of lower- and middle-income buyers. Spatially, purchasing is heavily condo-centered in core neighborhoods, and high-count nodes suggest that a meaningful share of activity comes from concentrated multi-unit developments rather than evenly distributed small-scale sales.
+			</p>
+
+			<h4>2. What is the relationship between real estate development and real estate purchasing in Boston over time?</h4>
+			<p>
+				I next connect when housing was built to how often it transacts and at what price, to separate legacy housing stock from newer development dynamics.
+			</p>
 			<figure>
-				<img src="IMAGE_FILENAME" alt="" />
+				<img src="Question 2.1.png" alt="" />
 				<figcaption>
-				ENTER IMAGE CAPTION HERE.
+				Question 2.1: Build-era versus transaction activity and price shows a U-shaped pattern: high transaction activity in late-1800s/early-1900s stock at moderate prices, a flatter middle era, and then a post-2000 return to higher prices with moderate counts. Statistically, this implies a non-linear relationship between build year and current market outcomes, so a simple linear trend would underfit the structure and misstate both early-era and recent-era effects.
 				</figcaption>
 			</figure>
+			<p>
+				The U-shape suggests two different housing regimes rather than one continuous trajectory: a legacy urban stock regime and a newer premium development regime. It also implies cohort/composition effects, where the transacting mix of properties varies by era. Because early eras are dense and outliers can skew trend lines, I zoom in after 1860 and use medians with a polynomial trend to better capture the non-linear signal.
+			</p>
+			<figure>
+				<img src="Question 2.2.png" alt="" />
+				<figcaption>
+				Question 2.2: Post-1860 trend view (median-based with polynomial fit), indicating that recent decades combine reduced development frequency with rising prices, raising the question of how location and scarcity interact in the current market.
+				</figcaption>
+			</figure>
+			<p>
+				The clusters around 1880-1900 and again after 2000 align with Boston's historical economic shifts. The earlier wave corresponds to industrial-era expansion, port and rail connectivity, and dense working/middle-class neighborhood buildout (including rowhouses and triple-deckers). The later wave reflects post-industrial growth in finance, healthcare, education, and tech, plus rezoning/redevelopment pressure in high-access areas. This historical framing helps explain why prices can rise even when new development volume is not proportionally large. Next, I map development clusters by period and compare historical cores with newer expansion zones.
+			</p>
+			<figure>
+				<img src="Question 2.3.png" alt="" />
+				<figcaption>
+				Question 2.3: Geographic distribution of development over time, showing established clusters in Back Bay, North End, Beacon Hill, and South End by 1900, with more recent development appearing on the edges of those cores where available space is likely more limited and contested.
+				</figcaption>
+			</figure>
+			<p>
+				The map supports a layered urban history: much of Boston's central residential geography was established during early urbanization and land-making eras (for example, Back Bay's 19th-century fill and rowhouse development), while recent projects concentrate in remaining high-opportunity edges, waterfront-adjacent parcels, and redevelopment corridors. In places like Newbury and the North End, older mixed-use building forms remain central to neighborhood identity, but today those same historically embedded locations command premium prices. Historically fixed geography and modern capital flows are therefore interacting, not replacing one another.
+			</p>
+			<p>
+				Boston's housing market reflects a dual structure, with a large legacy stock that turns over frequently and a newer post-2000 segment that commands higher prices. Recent urbanization appears more spatially constrained, with development pushing to cluster peripheries, which may help explain rising prices despite lower apparent development frequency.
+			</p>
+
+			<h4>3. Are the "high-price clusters" actually driven by a small number of new condo developments in recent years?</h4>
+			<p>
+				Since condos dominate residential purchases, I isolate condo transactions to test whether luxury hotspots represent broad neighborhood change or a few building-level events.
+			</p>
+			<figure>
+				<img src="Question 3.1.png" alt="" />
+				<figcaption>
+				Question 3.1: Condo price-location map over time, revealing concentrated high-price pockets and a prominent high-density node in Back Bay around 2000.
+				</figcaption>
+			</figure>
+			<p>
+				The large bubbles in this map indicate many condo sales concentrated at one location in a short period, which is consistent with multi-unit buildings selling many units soon after construction completion. I next inspect specific addresses to test whether these hotspots match known newly finished developments.
+			</p>
 
 			<figure>
-				<img src="IMAGE_FILENAME" alt="" />
+				<img src="Question 3.2.png" alt="" />
 				<figcaption>
-				ENTER IMAGE CAPTION HERE.
+				Question 3.2: Address-level check of the Back Bay hotspot identifies 1 Huntington Ave (Trinity Place Condominiums, built 2000) with a median price near $998,500.
 				</figcaption>
 			</figure>
+			<p>
+				The highest total transaction count occurs in 2004, with multiple large circles, so I next examine that year for additional development-driven clusters.
+			</p>
 
 			<figure>
-				<img src="IMAGE_FILENAME" alt="" />
+				<img src="Question 3.3.png" alt="" />
 				<figcaption>
-				ENTER IMAGE CAPTION HERE.
+				Question 3.3: 2004 condo hotspot view, showing multiple high-count nodes consistent with several large projects entering the market in a short window.
 				</figcaption>
 			</figure>
+			<p>
+				The map indicates multiple of these big circles, which suggests multiple developments rather than one isolated project. I go through these big bubbles and inspect the addresses, which highlights several luxury condo buildings that are still part of Boston's market today.
+			</p>
+			<p>
+				For example, I display 1 Nassau St (The Metropoliton) and its various units. It was built in 2004 and has total median price around $555,000 Another example not shown is 505 Tremont St (Atelier 505), built in 2003, has a median price around $1,550,000. Prices at initial post-development sales can be compared with more recent transactions to evaluate appreciation within the same building. This wave of development around 2004 helps explain the higher purchase counts seen in that period.
+			</p>
+			<p>
+				To gauge trends for these luxury buildings more reliably, I aggregate records to the building level by using the shared street address (excluding unit numbers) so that each development can be analyzed as a single entity. This avoids over-interpreting unit-level noise, where floor level, interior finishes, and one-off transaction timing can mask the broader behavior of the building. With this building-level view, I can compare total sales frequency, median price level, and resale cadence across projects that entered the market around the same period. That framework is important for distinguishing whether a high-price building behaves like a relatively stable long-hold asset or like a higher-turnover trading asset.
+			</p>
 
 			<figure>
-				<img src="IMAGE_FILENAME" alt="" />
+				<img src="Question 3.4.png" alt="" />
 				<figcaption>
-				ENTER IMAGE CAPTION HERE.
+				Question 3.4: Building-level examples from hotspot nodes, including 1 Nassau St (The Metropolitan, built 2004; median about $555,000) and related nearby projects such as 505 Tremont St (Atelier 505, built 2003; median about $1,550,000), indicating a development wave behind 2004 volume.
 				</figcaption>
 			</figure>
+			<p>
+				I also notice very high-price areas around 1 Dalton St (Four Seasons) and 776 Boylston St (Mandarin Oriental), both highlighted in the "Towers of Wealth" article. These are useful comparison buildings because they sit at the top end of Boston's condo market and may follow different turnover patterns than mid-priced buildings. A key hypothesis is that within-building sale frequency and price level are linked: some high-end towers may have lower turnover with longer holding periods (asset-preservation behavior), while others may show short-interval resales if units are treated more like financial assets. Testing this relationship can clarify whether extreme prices are mainly associated with stable ownership or with active speculative trading within the same buildings.
+			</p>
+			<p>
+				Finally, I test whether these large post-1990 condo buildings also show strong within-building appreciation by comparing initial versus most recent purchase prices for buildings with at least 20 units and at least $1 million median price.
+			</p>
 
 			<figure>
-				<img src="IMAGE_FILENAME" alt="" />
+				<img src="Question 3.5.png" alt="" />
 				<figcaption>
-				ENTER IMAGE CAPTION HERE.
+				Question 3.5: Initial versus most recent unit prices in large post-1990 condo buildings (20+ units, median >= $1M); slope less than 1 with a positive intercept suggests lower-initial-price units often see larger percentage gains, while very high-initial-price units still appreciate but at smaller average percentage rates.
 				</figcaption>
 			</figure>
-
-			<figure>
-				<img src="IMAGE_FILENAME" alt="" />
-				<figcaption>
-				ENTER IMAGE CAPTION HERE.
-				</figcaption>
-			</figure>
-
-			<figure>
-				<img src="IMAGE_FILENAME" alt="" />
-				<figcaption>
-				ENTER IMAGE CAPTION HERE.
-				</figcaption>
-			</figure>
-
-			<figure>
-				<img src="IMAGE_FILENAME" alt="" />
-				<figcaption>
-				ENTER IMAGE CAPTION HERE.
-				</figcaption>
-			</figure>
-
-			<figure>
-				<img src="IMAGE_FILENAME" alt="" />
-				<figcaption>
-				ENTER IMAGE CAPTION HERE.
-				</figcaption>
-			</figure>
+			<p>
+				The fitted trendline reinforces this interpretation: a high y-intercept combined with slope less than 1 indicates that cheaper (relative to other units in this graph) initial units often experience larger percentage increases. Very expensive initial units still tend to increase in absolute terms, but their average percentage growth is smaller. Overall, the pattern is upward, with recent sales generally priced higher than initial sales.
+			</p>
+			<p>
+				High-price clusters are substantially driven by discrete condo developments that create concentrated transaction bursts, not only diffuse neighborhood-wide escalation. This implies that interpreting "luxury clusters" requires building-level context: project timing, unit volume, and resale behavior can materially shape citywide signals of price concentration and affordability pressure.
+			</p>
 		</section>
 
 		<section>
 			<h2>Summary</h2>
 
-			<p>WRITE FINAL SUMMARY HERE.</p>
+			<h3>Main Lessons Learned</h3>
+			<p>
+				This analysis shows that Boston's residential market has become more expensive while becoming less active in total transaction volume. In the overview, sales counts peak around 2000-2004 and then decline, but median prices and price spread continue rising for most of the period. That divergence matters: a market can look "strong" by price growth while still becoming less accessible if fewer households can transact. Spatially, transactions are heavily concentrated in condo-dominant central neighborhoods, and several high-density purchase nodes appear to reflect large multi-unit developments rather than diffuse neighborhood-wide shifts.
+			</p>
+			<p>
+				When development is linked to purchasing, the story is not a single continuous trend. Boston shows an older, high-turnover legacy housing stock (especially late-1800s to early-1900s build eras) and a newer post-2000 segment with a stronger price premium. In other words, old and new stock can coexist in one market but behave differently in both turnover and price formation. Building-level checks of high-price clusters reinforce this point: concentrated tower projects can create large local transaction bursts that shape citywide averages and narratives.
+			</p>
+			<p>
+				The practical conclusion is that "affordability" cannot be read from one metric alone. Counts, medians, dispersion, property-type composition, and location all need to be read together. A shrinking transaction base plus rising medians can indicate stronger exclusionary pressure, especially when activity is concentrated in condominium developments targeted at higher purchasing power.
+			</p>
+
+			<h3>Technical Lessons (Tableau)</h3>
+			<p>
+				A major technical lesson was that worksheet design decisions strongly affect interpretation. I repeatedly switched between raw counts and share-based views, linear and log scales, and citywide versus filtered maps. This made it clear that no single chart form can carry the full analytical argument.
+			</p>
+			<p>
+				Calculated fields were essential for cleaning and structuring the analysis. Useful patterns to filter in Tableau's <strong>Create Calculated Field</strong> included:
+			</p>
+			<ul>
+				<li>Data cleaning and filtering: <code>IF [Latitude] != 0 AND [Longitude] != 0 THEN [Price] END</code> to remove invalid geocodes.</li>
+				<li>Null safety and robust logic: <code>IFNULL([Field], 0)</code>, <code>ZN([Measure])</code>, and explicit <code>CASE</code>/<code>IF</code> branches to avoid silent errors.</li>
+			</ul>
+			
+			<h4>Example: Question 3.5 (Repeat-Sale Overlay / Dumbbell)</h4>
+			<p>
+				For the last graph, I used a repeat-sale overlay approach in Tableau. The key assumption is that <code>Address</code> identifies the unit (or at least the entity being tracked). I created LOD fields for first/last sale dates and first/last sale prices:
+			</p>
+			<p>
+				
+				<strong>Date:</strong>
+
+			</p>
+			<pre><code>{ FIXED [Address] : MIN([Prsldate]) }</code></pre>
+			<pre><code>{ FIXED [Address] : MAX([Prsldate]) }</code></pre>
+			<p>
+				
+				<strong>Price:</strong>
+
+			</p>
+			<pre><code>{ FIXED [Address] :
+    MIN(
+        IF [Prsldate] = { FIXED [Address] : MIN([Prsldate]) }
+        THEN [Price]
+        END
+    )
+}</code></pre>
+			<pre><code>{ FIXED [Address] :
+    MAX(
+        IF [Prsldate] = { FIXED [Address] : MAX([Prsldate]) }
+        THEN [Price]
+        END
+    )
+}</code></pre>
+			<p>
+				I also filtered to repeat-sales only so first and last are meaningful. One approach is a boolean LOD filter:
+			</p>
+			<pre><code>{ FIXED [Address] : COUNT([Prsldate]) } &gt;= 2</code></pre>
+			<p>
+				Practical constraints: this becomes unreadable with too many addresses, so it works best after filtering to a building or Top N by price span. I also used tooltips with first/last sale date and holding-period context. If <code>Address</code> is building-level (not unit-level), a building-level median first-year vs median last-year version is more appropriate than unit-level overlays.
+			</p>
+			<p>
+				Another technical lesson was quality control: unusual visual breaks (like the post-2021 behavior) are not automatically "real trends." They can reveal coverage problems or type-specific missingness. Cross-checking multiple worksheets before interpreting a pattern prevented overclaiming.
+			</p>
+
+			<h3>Subtheme: Speculation (Insights and Implications)</h3>
+			<p>
+				Under the subtheme <strong>Speculation</strong>, the evidence suggests that part of Boston's high-price landscape is produced by asset-like dynamics concentrated in specific condo developments. High-price clusters are often tied to discrete project launches with many unit sales in short windows, and these events can dominate local market signals. This means some apparent neighborhood-level "luxury transformation" may actually be the footprint of a few buildings entering and recirculating through the market.
+			</p>
+			<p>
+				The implications are important. If price growth is increasingly anchored by condo-heavy, high-value developments while overall transaction participation declines, then market access may shift toward households with higher income or wealth buffers. That does not prove every buyer is speculative, but it does show a structure where speculative or investment-oriented behavior can have outsized influence on observed prices and affordability thresholds.
+			</p>
+			<p>
+				For policy and future research, this points to the need for building-level monitoring in addition to neighborhood averages. Useful next checks include ownership type, holding period, repeat-sale frequency, and occupancy patterns in high-density condo projects. These indicators would help distinguish resident-driven demand from capital-driven turnover and clarify when "growth" expands housing access versus when it primarily reinforces exclusion at the top of the distribution.
+			</p>
 		</section>
 	</main>
 </body>
